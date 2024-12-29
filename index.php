@@ -14,17 +14,44 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
+
+    <?php
+    
+        $query = "SELECT * FROM despesas ORDER BY 'nome' DESC";
+        $resultS = mysqli_query($connection, $query);
+        $query = "SELECT * FROM entradas ORDER BY 'nome' DESC";
+        $resultE = mysqli_query($connection, $query);
+
+        $despesas = 0;
+        $entradas = 0; 
+        while ($row = mysqli_fetch_assoc($resultE)) {
+            $entradas += $row['value'];
+        }
+
+        while ($row = mysqli_fetch_assoc($resultS)) {
+            $despesas += $row['value']; 
+        }
+
+    ?>
+
     <header class="saldo">
 
         <h1>Seu Saldo é:</h1>
 
-        <span>+R$ 500,00</span>
+        <span>
+            
+            R$<?php echo$entradas-$despesas; ?>
+    
+        </span>
 
     </header>
 
-    <section class="middle">
-        <table>
+    <section class="middle container">
+        <table class="table table-hover col-sm-6">
             <thead>
+                <tr>
+                    <th class="h1 text-center" colspan="3">Despesas</th>
+                </tr>
                 <tr>
                     <th>Nome</th>
                     <th>Descrição</th>
@@ -35,38 +62,44 @@
                 <?php
 
                     $query = "SELECT * FROM despesas ORDER BY 'nome' DESC";
-                    $result = mysqli_query($connection, $query);
+                    $resultS = mysqli_query($connection, $query);
 
-                    while ($row = mysqli_fetch_assoc($result)) {
+                    $total = 0;
+
+                    while ($row = mysqli_fetch_assoc($resultS)) {
                         echo "<tr>";
-                        echo "<td>". $row['name']. "</td>";
+                        echo "<td class=\"nameD\">". $row['name']. "</td>";
                         echo "<td>". $row['description']. "</td>";
-                        echo "<td>". $row['value']. "</td>";
+                        echo "<td class=\"valueD\">". $row['value']. "</td>";
                         echo "</tr>";
+                        $total+=$row['value'];
                     }
 
                 ?>
-                <form action="">
+                <form action="addD.php" method="get">
                     <tr>
-                        <td><input type="text" placeholder="Nome"></td>
-                        <td><input type="text" placeholder="Descrição"></td>
-                        <td><input type="text" placeholder="Valor"></td>
+                        <td><input class="form-control" type="text" placeholder="Nome"></td>
+                        <td><input class="form-control" type="text" placeholder="Descrição"></td>
+                        <td><input class="form-control" type="text" placeholder="Valor"></td>
                     </tr>
                     <tr>
                         <td colspan="3">
-                            <button type="submit">Adicionar</button>
+                            <button type="submit" class="btn btn-primary col-sm-12">Adicionar</button>
                         </td>
                     </tr>
                 </form>
                 <tr>
                     <td colspan="2">Total:</td>
-                    <td colspan="1">R$ 500,00</td>
+                    <td colspan="1">R$ <?php echo$total ?></td>
                 </tr>
             </tbody>
         </table>
-
-        <table>
+                    <br><br>
+        <table class="table table-hover col-sm-6">
             <thead>
+                <tr>
+                    <th class="h1 text-center" colspan="3">Entradas</th>
+                </tr>
                 <tr>
                     <th>Nome</th>
                     <th>Descrição</th>
@@ -77,49 +110,63 @@
                 <?php
 
                     $query = "SELECT * FROM entradas ORDER BY 'nome' DESC";
-                    $result = mysqli_query($connection, $query);
+                    $resultE = mysqli_query($connection, $query);
 
-                    while ($row = mysqli_fetch_assoc($result)) {
+                    $total = 0;
+
+                    while ($row = mysqli_fetch_assoc($resultE)) {
                         echo "<tr>";
-                        echo "<td>". $row['name']. "</td>";
+                        echo "<td class=\"name\">". $row['name']. "</td>";
                         echo "<td>". $row['description']. "</td>";
                         echo "<td>". $row['value']. "</td>";
                         echo "</tr>";
+                        $total+=$row['value'];
                     }
 
                 ?>
+                <form action="addE.php" method="get">
+                    <tr>
+                        <td><input class="form-control" type="text" placeholder="Nome"></td>
+                        <td><input class="form-control" type="text" placeholder="Descrição"></td>
+                        <td><input class="form-control" type="text" placeholder="Valor"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <button type="submit" class="btn btn-primary col-sm-12">Adicionar</button>
+                        </td>
+                    </tr>
+                </form>
                 <tr>
-                    <td><input type="text" placeholder="Nome"></td>
-                    <td><input type="text" placeholder="Descrição"></td>
-                    <td><input type="text" placeholder="Valor"></td>
-                </tr>
-                <tr>
-                    <td colspan="3">
-                        <button type="submit">Adicionar</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="3">Total: R$ 500,00</td>
+                    <td colspan="2">Total:</td>
+                    <td colspan="1">R$ <?php echo$total ?></td>
                 </tr>
                 
             </tbody>
         </table>
     </section>
-    <section class="middle2">
-        <h2>Gráfico de despesas</h2>
+    <br><hr><br>
+    <section class="middle2 container">
+        <h2>Gráfico de despesas: </h2>
         <canvas id="despesasChart">
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
             <script>
+
+                const names = document.getElementsByClassName('nameD');
+                const values = document.getElementsByClassName('valueD');
+
+                const namesArray = Array.from(names).map(name => name.textContent);
+                const valuesArray = Array.from(values).map(value => parseFloat(value.textContent));
+
                 const ctx = document.getElementById('despesasChart').getContext('2d');
                 const despesasChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
-                        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                        labels: namesArray,
                         datasets: [{
                             label: 'Despesas',
-                            data: [120, 190, 300, 150, 250, 300, 200, 180, 240, 150, 200, 220],
-                            backgroundColor: 'rgba(75, 192, 192, 0.8)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
+                            data: valuesArray,
+                            backgroundColor: 'rgba(192, 75, 75, 0.6)',
+                            borderColor: 'rgba(192, 75, 75, 1)',
                             borderWidth: 1
                         }]
                     },
