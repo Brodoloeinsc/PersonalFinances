@@ -77,21 +77,23 @@
 
                 ?>
                 <form action="addD.php" method="get">
-                    <tr>
-                        <td><input class="form-control" type="text" placeholder="Nome"></td>
-                        <td><input class="form-control" type="text" placeholder="Descrição"></td>
-                        <td><input class="form-control" type="text" placeholder="Valor"></td>
+                    <tr>    
+                        <td><input name="name" class="form-control" type="text" placeholder="Nome"></td>
+                        <td><input name="description" class="form-control" type="text" placeholder="Descrição"></td>
+                        <td><input name="value" class="form-control" type="text" placeholder="Valor"></td>
                     </tr>
                     <tr>
                         <td colspan="3">
-                            <button type="submit" class="btn btn-primary col-sm-12">Adicionar</button>
+                            <button type="submit" class="btn col-sm-12">Adicionar</button>
                         </td>
                     </tr>
                 </form>
-                <tr>
-                    <td colspan="2">Total:</td>
-                    <td colspan="1">R$ <?php echo$total ?></td>
-                </tr>
+                <thead>
+                    <tr>
+                        <th colspan="2">Total:</td>
+                        <th colspan="1">R$ <?php echo$total ?></td>
+                    </tr>
+                </thead>
             </tbody>
         </table>
                     <br><br>
@@ -126,20 +128,22 @@
                 ?>
                 <form action="addE.php" method="get">
                     <tr>
-                        <td><input class="form-control" type="text" placeholder="Nome"></td>
-                        <td><input class="form-control" type="text" placeholder="Descrição"></td>
-                        <td><input class="form-control" type="text" placeholder="Valor"></td>
+                        <td><input name="name" class="form-control" type="text" placeholder="Nome"></td>
+                        <td><input name="description" class="form-control" type="text" placeholder="Descrição"></td>
+                        <td><input name="value" class="form-control" type="text" placeholder="Valor"></td>
                     </tr>
                     <tr>
                         <td colspan="3">
-                            <button type="submit" class="btn btn-primary col-sm-12">Adicionar</button>
+                            <button type="submit" class="btn col-sm-12">Adicionar</button>
                         </td>
                     </tr>
                 </form>
-                <tr>
-                    <td colspan="2">Total:</td>
-                    <td colspan="1">R$ <?php echo$total ?></td>
-                </tr>
+                <thead>
+                    <tr>
+                        <th colspan="2">Total:</td>
+                        <th colspan="1">R$ <?php echo$total ?></td>
+                    </tr>
+                </thead>
                 
             </tbody>
         </table>
@@ -147,36 +151,14 @@
     <br><hr><br>
     <section class="middle2 container">
         <h2>Gráfico de despesas: </h2>
-        <canvas id="despesasChart">
+        <canvas class="col-sm-6" id="despesasChart">
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-            <script>
-
-                const names = document.getElementsByClassName('nameD');
-                const values = document.getElementsByClassName('valueD');
-
-                const namesArray = Array.from(names).map(name => name.textContent);
-                const valuesArray = Array.from(values).map(value => parseFloat(value.textContent));
-
-                const ctx = document.getElementById('despesasChart').getContext('2d');
-                const despesasChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: namesArray,
-                        datasets: [{
-                            label: 'Despesas',
-                            data: valuesArray,
-                            backgroundColor: 'rgba(192, 75, 75, 0.6)',
-                            borderColor: 'rgba(192, 75, 75, 1)',
-                            borderWidth: 1
-                        }]
-                    },
-                })
-            </script>
+            <script src="app.js"></script>
         </canvas>
     </section>
 
     <footer class="bottom">
-        <a href="">Aprenda a usar o site</a>
+        <a href="">Aprenda a Usar o Site</a>
     </footer>
 </body>
 </html>
